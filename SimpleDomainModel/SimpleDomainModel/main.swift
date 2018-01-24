@@ -27,12 +27,73 @@ public struct Money {
   public var amount : Int
   public var currency : String
   
+  private func validMoney(_ currency: String) -> Bool {
+    return (currency == "USD" || currency == "GBP" || currency == "EUR" ||
+            currency == "CAN")
+  }
+    
   public func convert(_ to: String) -> Money {
+    var newCurr : Money = Money(amount: self.amount, currency: self.currency)
+    if validMoney(to) {
+      if to == "USD" {
+        switch self.currency {
+        case "GBP":
+          newCurr.amount = Int(Double(self.amount) * 0.5)
+        case "EUR":
+          newCurr.amount = Int(Double(self.amount) * 1.5)
+        case "CAN":
+          newCurr.amount = Int(Double(self.amount) * 1.25)
+        default:
+          newCurr.amount = self.amount
+        }
+      } else if to == "GBP" {
+        switch self.currency {
+        case "USD":
+          newCurr.amount = self.amount * 2
+        case "EUR":
+          newCurr.amount = self.amount * 3
+        case "CAN":
+          newCurr.amount = Int(Double(self.amount) * 2.5)
+        default:
+          newCurr.amount = self.amount
+        }
+      } else if to == "EUR" {
+        switch self.currency {
+        case "USD":
+          newCurr.amount = Int(Double(self.amount) * 0.67)
+        case "GBP":
+          newCurr.amount = Int(self.amount / 3)
+        case "CAN":
+          newCurr.amount = Int(Double(self.amount) * 0.83)
+        default:
+          newCurr.amount = self.amount
+        }
+      } else {
+        switch self.currency {
+        case "USD":
+          newCurr.amount = Int(Double(self.amount) * 0.8)
+        case "GBP":
+          newCurr.amount = Int(Double(self.amount) * 0.4)
+        case "EUR":
+          newCurr.amount = Int(Double(self.amount) * 1.2)
+        default:
+          newCurr.amount = self.amount
+        }
+      }
+      newCurr.currency = to
+    }
+    return newCurr
   }
   
   public func add(_ to: Money) -> Money {
+    let convertToCurrent = to.convert(self.currency)
+    let newAmount = convertToCurrent.amount + self.amount
+    return Money(amount: newAmount, currency: self.currency)
   }
   public func subtract(_ from: Money) -> Money {
+    let convertToCurrent = from.convert(self.currency)
+    let newAmount = self.amount - convertToCurrent.amount
+    return Money(amount: newAmount, currency: self.currency)
   }
 }
 
