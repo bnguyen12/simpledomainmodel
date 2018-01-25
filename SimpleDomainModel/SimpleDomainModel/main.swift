@@ -38,44 +38,44 @@ public struct Money {
       if to == "USD" {
         switch self.currency {
         case "GBP":
-          newCurr.amount = Int(Double(self.amount) * 0.5)
+          newCurr.amount = self.amount * 2
         case "EUR":
-          newCurr.amount = Int(Double(self.amount) * 1.5)
+          newCurr.amount = Int(round(Double(self.amount) / 1.5))
         case "CAN":
-          newCurr.amount = Int(Double(self.amount) * 1.25)
+          newCurr.amount = Int(round(Double(self.amount) / 1.25))
         default:
           newCurr.amount = self.amount
         }
       } else if to == "GBP" {
         switch self.currency {
         case "USD":
-          newCurr.amount = self.amount * 2
+          newCurr.amount = Int(round(Double(self.amount / 2)))
         case "EUR":
-          newCurr.amount = self.amount * 3
+          newCurr.amount = Int(round(Double(self.amount / 3)))
         case "CAN":
-          newCurr.amount = Int(Double(self.amount) * 2.5)
+          newCurr.amount = Int(round(Double(self.amount) / 2.5))
         default:
           newCurr.amount = self.amount
         }
       } else if to == "EUR" {
         switch self.currency {
         case "USD":
-          newCurr.amount = Int(Double(self.amount) * 0.67)
+          newCurr.amount = Int(round(Double(self.amount) * 1.5))
         case "GBP":
-          newCurr.amount = Int(self.amount / 3)
+          newCurr.amount = Int(round(Double(self.amount / 3)))
         case "CAN":
-          newCurr.amount = Int(Double(self.amount) * 0.83)
+          newCurr.amount = Int(round(Double(self.amount) * 1.2))
         default:
           newCurr.amount = self.amount
         }
       } else {
         switch self.currency {
         case "USD":
-          newCurr.amount = Int(Double(self.amount) * 0.8)
+          newCurr.amount = Int(round(Double(self.amount) * 1.25))
         case "GBP":
-          newCurr.amount = Int(Double(self.amount) * 0.4)
+          newCurr.amount = Int(round(Double(self.amount) * 2.5))
         case "EUR":
-          newCurr.amount = Int(Double(self.amount) * 1.2)
+          newCurr.amount = Int(round(Double(self.amount) * 0.83))
         default:
           newCurr.amount = self.amount
         }
@@ -86,14 +86,14 @@ public struct Money {
   }
   
   public func add(_ to: Money) -> Money {
-    let convertToCurrent = to.convert(self.currency)
-    let newAmount = convertToCurrent.amount + self.amount
-    return Money(amount: newAmount, currency: self.currency)
+    let convertToGiven = self.convert(to.currency)
+    let newAmount = convertToGiven.amount + to.amount
+    return Money(amount: newAmount, currency: to.currency)
   }
   public func subtract(_ from: Money) -> Money {
-    let convertToCurrent = from.convert(self.currency)
-    let newAmount = self.amount - convertToCurrent.amount
-    return Money(amount: newAmount, currency: self.currency)
+    let convertToGiven = self.convert(from.currency)
+    let newAmount = from.amount - convertToGiven.amount
+    return Money(amount: newAmount, currency: from.currency)
   }
 }
 
@@ -110,15 +110,25 @@ open class Job {
   }
   
   public init(title : String, type : JobType) {
+    self.title = title
+    self.type = type
   }
   
   open func calculateIncome(_ hours: Int) -> Int {
+    switch self.type {
+    case .Hourly(let wage):
+      return Int(round(wage * Double(hours)))
+    case .Salary(let yearly):
+      return yearly
+    }
   }
   
+  //do later
   open func raise(_ amt : Double) {
+    
   }
 }
-
+/*
 ////////////////////////////////////
 // Person
 //
@@ -167,7 +177,7 @@ open class Family {
   }
 }
 
-
+*/
 
 
 
