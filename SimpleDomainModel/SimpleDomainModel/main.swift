@@ -132,7 +132,7 @@ open class Job {
     }
   }
 }
-/*
+
 ////////////////////////////////////
 // Person
 //
@@ -143,15 +143,25 @@ open class Person {
 
   fileprivate var _job : Job? = nil
   open var job : Job? {
-    get { }
+    get { return _job }
     set(value) {
+      if self.age <= 15 {
+        _job = nil
+      } else {
+      _job = value
+      }
     }
   }
   
   fileprivate var _spouse : Person? = nil
   open var spouse : Person? {
-    get { }
+    get { return _spouse }
     set(value) {
+      if self.age <= 15 {
+        _spouse = nil
+      } else {
+      _spouse = value
+      }
     }
   }
   
@@ -162,6 +172,9 @@ open class Person {
   }
   
   open func toString() -> String {
+    var sentence = "[Person: firstName:\(self.firstName) lastName:\(self.lastName)"
+    sentence += " age:\(self.age) job:\(self.job?.type) spouse:\(spouse?.firstName)]"
+    return sentence
   }
 }
 
@@ -172,16 +185,33 @@ open class Family {
   fileprivate var members : [Person] = []
   
   public init(spouse1: Person, spouse2: Person) {
+    if spouse1.spouse == nil && spouse2.spouse == nil {
+      spouse1.spouse = spouse2
+      spouse2.spouse = spouse1
+      members.append(spouse1)
+      members.append(spouse2)
+    }
   }
   
   open func haveChild(_ child: Person) -> Bool {
+    for index in 0...1 {
+      if members[index].age > 21 {
+        members.append(child)
+        return true
+      }
+    }
+    return false
   }
   
   open func householdIncome() -> Int {
+    var sum = 0
+    for index in 0...members.count - 1 {
+      if members[index].job != nil {
+        sum += members[index].job!.calculateIncome(2000)
+      }
+    }
+    return sum
   }
 }
-
-*/
-
 
 
