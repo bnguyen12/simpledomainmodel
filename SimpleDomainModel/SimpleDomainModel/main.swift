@@ -123,9 +123,13 @@ open class Job {
     }
   }
   
-  //do later
   open func raise(_ amt : Double) {
-    
+    switch self.type {
+    case .Hourly(let wage):
+      self.type = JobType.Hourly(wage + amt)
+    case .Salary(let salary):
+      self.type = JobType.Salary(salary + Int(round(amt)))
+    }
   }
 }
 /*
